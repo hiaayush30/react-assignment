@@ -23,7 +23,8 @@ export default function BasicDemo() {
 
   const [customRows, setCustomRows] = useState("");
 
-  const op = useRef<OverlayPanel>(null);
+  const overlayRef = useRef<OverlayPanel>(null);
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     fetchPage(page + 1, rows);
@@ -53,14 +54,18 @@ export default function BasicDemo() {
       return alert("Enter a valid number!")
     }
     try {
+      setLoading(true)
       setSelectedProducts([])
       const response = await fetch(`https://api.artic.edu/api/v1/artworks?page=1&limit=${customRows}`)
-      if(response.ok){
+      if (response.ok) {
         const data = await response.json();
         setSelectedProducts(products => [...products, ...data.data])
       }
     } catch (error) {
       console.log(error)
+    }
+    finally {
+      setLoading(false)
     }
   }
 
@@ -90,9 +95,9 @@ export default function BasicDemo() {
             <div className="cursor-pointer">
               <i
                 className="pi pi-angle-down"
-                onClick={(e) => op.current?.toggle(e)}
+                onClick={(e) => overlayRef.current?.toggle(e)}
               ></i>
-              <OverlayPanel ref={op}>
+              <OverlayPanel ref={overlayRef}>
                 <input
                   value={customRows}
                   onChange={(e) => setCustomRows(e.target.value)}
@@ -101,10 +106,14 @@ export default function BasicDemo() {
                   placeholder="Select rows..."
                 />
                 <button
-                  onClick={selectCustomRows}
+                  disabled={loading}
+                  onClick={async (e) => {
+                    await selectCustomRows()
+                    overlayRef.current?.toggle(e)
+                  }}
                   className="p-1 m-1 bg-slate-200 rounded-lg cursor-pointer"
                 >
-                  Submit
+                  {loading ? "Selecting..." : "Submit"}
                 </button>
               </OverlayPanel>
             </div>
