@@ -55,7 +55,7 @@ export default function BasicDemo() {
     try {
       setLoading(true)
       setSelectedProducts([])
-      const response = await fetch(`https://api.artic.edu/api/v1/artworks?page=1&limit=${customRows}`)
+      const response = await fetch(`https://api.artic.edu/api/v1/artworks?page=0&limit=${customRows}`)
       if (response.ok) {
         const data = await response.json();
         setSelectedProducts(products => [...products, ...data.data])
