@@ -42,9 +42,8 @@ export default function BasicDemo() {
   };
 
   const handlePageChange = (event: DataTablePageEvent) => {
-    if (event.page) {
-      console.log(event.page)
-      setPage(event.page);
+    if (event.page || event.page == 0) {
+      setPage(event.page)
     }
     setRows(event.rows);
   };
@@ -126,7 +125,6 @@ export default function BasicDemo() {
         <Column field="date_start" header="Start Date" />
         <Column field="date_end" header="End Date" />
       </DataTable>
-      <button onClick={() => console.log(selectedProducts)}>Click Me</button>
     </div>
   );
 }
